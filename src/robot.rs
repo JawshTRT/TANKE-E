@@ -4,5 +4,6 @@ use std::error::Error;
 pub fn robot_main() -> Result<(), Box<dyn Error>> {
     let mut motor = PWMMotor::talon_srx(12)?;
     motor.set_speed(1.0)?;
-    loop {}
+    std::thread::park(); // Do nothing, better than infinite loop since it doesn't spike cpu
+    Ok(())
 }

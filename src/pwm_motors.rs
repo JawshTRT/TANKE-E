@@ -2,7 +2,6 @@ use rppal::gpio::{Gpio, OutputPin};
 use snafu::prelude::*;
 
 #[derive(Debug, Snafu)]
-#[snafu(visibility(pub))]
 pub enum PWMMotorError {
     #[snafu(display(
         "Your duty cycle: {duty} on the motor with pin {motor_pin} should be between -1 and 1"
@@ -20,7 +19,7 @@ pub enum PWMMotorError {
 }
 
 pub struct PWMMotor {
-    pin: OutputPin,
+    output: OutputPin,
     frequency: f64,
     idle_duty: f64,
     forward_duty: f64,
@@ -30,10 +29,13 @@ pub struct PWMMotor {
 impl PWMMotor {
     pub fn talon_srx(pin: u8) -> Result<PWMMotor, PWMMotorError> {
         let gpio = Gpio::new().context(GPIOInitializationFailedSnafu)?;
-        let pin = gpio.get(pin).context(PINInitializationFailedSnafu)?;
+        let output = gpio
+            .get(pin)
+            .context(PINInitializationFailedSnafu)?
+            .into_output();
 
         Ok(PWMMotor {
-            pin: pin.into_output(),
+            output,
             frequency: 500.0,
             idle_duty: 0.0,
             forward_duty: 0.72,
@@ -42,8 +44,7 @@ impl PWMMotor {
     }
 
     pub fn set_speed(&mut self, speed: f64) -> Result<(), PWMMotorError> {
-        let pwm = self
-            .pin
+        self.output
             .set_pwm_frequency(self.frequency, self.constrain(speed)?)
             .context(DutyCycleFrequencyUnableSnafu)?;
         Ok(())
@@ -51,9 +52,9 @@ impl PWMMotor {
 
     pub fn constrain(&self, duty: f64) -> Result<f64, PWMMotorError> {
         ensure!(
-            duty >= -1.0 && duty <= 1.0,
+            (-1.0..=1.0).contains(&duty),
             DutyCycleOutOfBoundsSnafu {
-                motor_pin: self.pin.pin(),
+                motor_pin: self.output.pin(),
                 duty
             }
         );
