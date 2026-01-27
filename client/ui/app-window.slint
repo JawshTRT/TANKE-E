@@ -1,0 +1,34 @@
+import {
+    Button,
+    VerticalBox,
+    HorizontalBox,
+    LineEdit,
+} from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    in-out property <int> counter: 42;
+    callback request-move();
+
+    width: 400px;
+    height: 200px;
+
+    callback request-increase-value();
+    HorizontalLayout {
+        VerticalLayout {
+            LineEdit {
+                placeholder-text: "IP Address";
+            }
+
+            LineEdit {
+                placeholder-text: "Port";
+            }
+        }
+
+        Button {
+            text: "MOVE";
+            clicked => {
+                root.request-move();
+            }
+        }
+    }
+}
