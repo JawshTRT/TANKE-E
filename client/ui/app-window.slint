@@ -33,19 +33,21 @@ export component AppWindow inherits Window {
                 };
             }
         }
-    }
 
-    Button {
-        text: "MOVE";
-        clicked => {
-            root.request-move();
-        }
-    }
+        VerticalBox {
+            Button {
+                text: "Connect";
+                clicked => {
+                    root.connect(root.port, root.ip);
+                }
+            }
 
-    Button {
-        text: "Connect";
-        clicked => {
-            root.connect(root.port, root.ip);
+            Button {
+                text: "MOVE";
+                clicked => {
+                    root.request-move();
+                }
+            }
         }
     }
 }
