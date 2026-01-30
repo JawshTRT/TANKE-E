@@ -8,27 +8,44 @@ import {
 export component AppWindow inherits Window {
     in-out property <int> counter: 42;
     callback request-move();
-
+    callback connect(string, string);
     width: 400px;
     height: 200px;
+
+    property <string> ip: "";
+    property <string> port: 3;
 
     callback request-increase-value();
     HorizontalLayout {
         VerticalLayout {
             LineEdit {
                 placeholder-text: "IP Address";
+                edited(text) => {
+                    root.ip = text
+                };
             }
 
             LineEdit {
+                input-type: number;
                 placeholder-text: "Port";
+                edited(text) => {
+                    root.port = text
+                };
             }
         }
+    }
 
-        Button {
-            text: "MOVE";
-            clicked => {
-                root.request-move();
-            }
+    Button {
+        text: "MOVE";
+        clicked => {
+            root.request-move();
+        }
+    }
+
+    Button {
+        text: "Connect";
+        clicked => {
+            root.connect(root.port, root.ip);
         }
     }
 }

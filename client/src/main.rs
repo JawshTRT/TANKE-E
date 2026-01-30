@@ -8,6 +8,14 @@ slint::include_modules!();
 fn main() -> Result<(), Box<dyn Error>> {
     let ui = AppWindow::new()?;
 
+    ui.on_connect({
+        let ui_handle = ui.as_weak();
+        move |port, ip| {
+            let ui = ui_handle.unwrap();
+            // TODO: Connect to robot server
+            println!("Connected to port {0} at ip {1}", port, ip);
+        }
+    });
     ui.on_request_move({
         let ui_handle = ui.as_weak();
         move || {
@@ -17,7 +25,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             //ui.set_counter(ui.get_counter() + 1);
         }
     });
-
     ui.run()?;
 
     Ok(())
