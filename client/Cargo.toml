@@ -6,7 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
 slint = "1.14.1"
+tungstenite = "0.28.0"
 
 [build-dependencies]
 slint-build = "1.14.1"

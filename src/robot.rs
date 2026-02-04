@@ -57,7 +57,9 @@ pub fn robot_main() -> Result<(), Box<dyn Error>> {
                             };
                             // yo you messed up...
                             let msg = Message::Text(serde_json::to_string(&err).unwrap().into()); //Placeholder
-                            websocket.send(msg).unwrap();
+                            websocket.send(msg.clone()).unwrap();
+
+                            println!("{}", msg);
                         }
                     };
                 }
